@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Annochat | Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.15), transparent 40%),
+                radial-gradient(circle at bottom left, rgba(236, 72, 153, 0.1), transparent 40%);
+            background-color: var(--bg-primary);
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            position: relative;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header .logo {
+            font-size: 2rem;
+            color: var(--text-normal);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .auth-header .logo i {
+            color: var(--brand-experiment);
+            font-size: 1.8rem;
+        }
+
+        .auth-header .brand-icon {
+            margin-bottom: 25px;
+            transform-origin: center center;
+        }
+
+        .auth-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .auth-form .input-group {
+            margin-bottom: 20px;
+        }
+
+        .auth-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .auth-form input,
+        .auth-form select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .auth-form select option {
+            background: #1e293b;
+            color: white;
+        }
+
+        .auth-form input:focus,
+        .auth-form select:focus {
+            outline: none;
+            border-color: var(--brand-experiment);
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .auth-btn {
+            width: 100%;
+            background: var(--brand-experiment);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .auth-btn:hover {
+            background: #7c3aed;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px var(--brand-experiment);
+        }
+
+        .auth-btn.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-divider::before {
+            margin-right: 15px;
+        }
+
+        .auth-divider::after {
+            margin-left: 15px;
+        }
+
+        .guest-btn {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-normal);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .guest-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .guest-btn i {
+            color: var(--text-muted);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: var(--brand-experiment);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Abstract shapes matching the site vibe */
+        .shape {
+            position: absolute;
+            filter: blur(60px);
+            z-index: 1;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        .shape-1 {
+            width: 400px;
+            height: 400px;
+            background: #8b5cf6;
+            top: -100px;
+            right: -100px;
+        }
+
+        .shape-2 {
+            width: 300px;
+            height: 300px;
+            background: #ec4899;
+            bottom: -50px;
+            left: -50px;
+        }
+
+        #error-msg,
+        #success-msg {
+            display: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #error-msg {
+            background: rgba(225, 29, 72, 0.2);
+            color: #ff4d6d;
+            border: 1px solid rgba(225, 29, 72, 0.3);
+        }
+
+        #success-msg {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+    </style>
+</head>
+
+<body class="auth-page">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+
+    <div class="auth-card">
+        <div class="auth-header">
+            <a href="index.html" style="text-decoration: none;">
+                <div class="logo">
+                    <img src="icon/logo2.png" alt="Annochat Logo" class="brand-icon">
+                </div>
+            </a>
+            <h1 id="form-title">Welcome Back</h1>
+            <p id="form-subtitle">Enter your credentials to access the chat.</p>
+        </div>
+
+        <div id="error-msg"></div>
+        <div id="success-msg"></div>
+
+        <form id="auth-form" class="auth-form">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter username" required autocomplete="username">
+            </div>
+
+            <div id="signup-fields" style="display: none;">
+                <div class="input-group">
+                    <label for="lastName">Last Name (Optional)</label>
+                    <input type="text" id="lastName" placeholder="Enter last name" autocomplete="family-name">
+                </div>
+                <div class="input-group" style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label for="country">Country</label>
+                        <select id="country" style="width: 100%;">
+                            <option value="">Select Country</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="city">City</label>
+                        <select id="city" style="width: 100%;" disabled>
+                            <option value="">Select City</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" placeholder="Age" min="13" max="120" style="width: 100%;">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+
+            <button type="submit" id="submit-btn" class="auth-btn">
+                <span>Login</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <span id="toggle-text">Don't have an account? <a href="#" id="toggle-form">Sign up</a></span>
+        </div>
+
+        <div class="auth-divider">OR</div>
+
+        <a href="#" id="guest-btn" class="guest-btn">
+            <i class="fa-solid fa-ghost"></i>
+            Continue as Guest (Limited)
+        </a>
+    </div>
+
+    <!-- Need config.js for the API URL -->
+    <script src="config.js"></script>
+    <script>
+        let isLoginMode = true;
+
+        const formTitle = document.getElementById('form-title');
+        const formSubtitle = document.getElementById('form-subtitle');
+        const submitBtn = document.getElementById('submit-btn');
+        const toggleText = document.getElementById('toggle-text');
+        const toggleFormBtn = document.getElementById('toggle-form');
+        const authForm = document.getElementById('auth-form');
+        const guestBtn = document.getElementById('guest-btn');
+
+        const errorMsgEl = document.getElementById('error-msg');
+        const successMsgEl = document.getElementById('success-msg');
+
+        function showMessage(type, text) {
+            errorMsgEl.style.display = 'none';
+            successMsgEl.style.display = 'none';
+            if (type === 'error') {
+                errorMsgEl.innerText = text;
+                errorMsgEl.style.display = 'block';
+            } else if (type === 'success') {
+                successMsgEl.innerText = text;
+                successMsgEl.style.display = 'block';
+            }
+        }
+
+        toggleFormBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            isLoginMode = !isLoginMode;
+            showMessage('', '');
+
+            const signupFields = document.getElementById('signup-fields');
+
+            if (isLoginMode) {
+                formTitle.innerText = 'Welcome Back';
+                formSubtitle.innerText = 'Enter your credentials to access the chat.';
+                submitBtn.innerHTML = '<span>Login</span><i class="fa-solid fa-arrow-right"></i>';
+                toggleText.innerHTML = 'Don\'t have an account? <a href="#" id="toggle-form">Sign up</a>';
+                signupFields.style.display = 'none';
+            } else {
+                formTitle.innerText = 'Create Account';
+                formSubtitle.innerText = 'Register to unlock unlimited chatting.';
+                submitBtn.innerHTML = '<span>Sign Up</span><i class="fa-solid fa-user-plus"></i>';
+                toggleText.innerHTML = 'Already have an account? <a href="#" id="toggle-form">Login</a>';
+                signupFields.style.display = 'block';
+            }
+            // Re-attach listener due to innerHTML replace
+            document.getElementById('toggle-form').addEventListener('click', arguments.callee);
+        });
+
+        guestBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Just mark as guest and set usage to 0 if not present
+            localStorage.setItem('isLoggedIn', 'false');
+            if (!localStorage.getItem('guest_chats_used')) {
+                localStorage.setItem('guest_chats_used', '0');
+            }
+            window.location.href = 'app.html';
+        });
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const age = document.getElementById('age').value.trim();
+            const country = document.getElementById('country').value.trim();
+            const city = document.getElementById('city').value.trim();
+
+            if (!username || !password) {
+                showMessage('error', 'Please fill in all required fields.');
+                return;
+            }
+
+            if (!isLoginMode) {
+                if (!age || !country || !city) {
+                    showMessage('error', 'Please provide your Age, Country, and City.');
+                    return;
+                }
+            }
+
+            if (!CONFIG.GOOGLE_SHEET_API_URL) {
+                // If the user hasn't setup the URL yet, we'll bypass it for demo, but normally error
+                showMessage('error', 'Google Sheet API URL is missing in config.js. Please ask admin to setup.');
+                return;
+            }
+
+            submitBtn.classList.add('loading');
+            const originalBtnHtml = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Please wait...';
+            showMessage('', '');
+
+            try {
+                const response = await fetch(CONFIG.GOOGLE_SHEET_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Apps Script requires plain text or form-urlencoded sometimes due to CORS, but JSON stringified body works
+                    body: JSON.stringify({
+                        action: isLoginMode ? 'login' : 'register',
+                        username: username,
+                        password: password,
+                        lastName: lastName,
+                        age: age,
+                        country: country,
+                        city: city
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage('success', result.message);
+                    if (isLoginMode || result.message.includes('successful')) {
+                        // Successfully logged in or registered (could log them in immediately)
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('username', username);
+
+                        setTimeout(() => {
+                            window.location.href = 'app.html';
+                        }, 1000);
+                    }
+                } else {
+                    showMessage('error', result.message || 'An error occurred.');
+                }
+            } catch (err) {
+                console.error(err);
+                // Fallback for CORS issues if Apps Script not deployed correctly
+                showMessage('error', 'Network error. Ensure Apps Script Web App is deployed accessible to "Anyone".');
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.innerHTML = originalBtnHtml;
+            }
+        });
+
+        // Fetch countries for signup
+        let countryData = [];
+        async function fetchCountries() {
+            try {
+                const res = await fetch('https://countriesnow.space/api/v0.1/countries');
+                const json = await res.json();
+                if (!json.error) {
+                    countryData = json.data;
+                    const countrySelect = document.getElementById('country');
+                    countryData.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.country;
+                        opt.innerText = c.country;
+                        countrySelect.appendChild(opt);
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to load countries:", err);
+            }
+        }
+
+        fetchCountries();
+
+        document.getElementById('country').addEventListener('change', (e) => {
+            const selectedCountry = e.target.value;
+            const citySelect = document.getElementById('city');
+            citySelect.innerHTML = '<option value="">Select City</option>';
+
+            if (!selectedCountry) {
+                citySelect.disabled = true;
+                return;
+            }
+
+            const cInfo = countryData.find(c => c.country === selectedCountry);
+            if (cInfo && cInfo.cities) {
+                cInfo.cities.forEach(city => {
+                    const opt = document.createElement('option');
+                    opt.value = city;
+                    opt.innerText = city;
+                    citySelect.appendChild(opt);
+                });
+                citySelect.disabled = false;
+            }
+        });
+
+    </script>
+</body>
+
+</html>

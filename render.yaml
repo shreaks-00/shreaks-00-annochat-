@@ -1,0 +1,9 @@
+  services:
+  - type: web
+    name: chat-backend
+    env: docker
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: API_LEAGUE_KEY
+        sync: false

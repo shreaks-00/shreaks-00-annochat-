@@ -260,6 +260,92 @@
             color: #34d399;
             border: 1px solid rgba(16, 185, 129, 0.3);
         }
+        /* Mandatory Terms Modal */
+        .terms-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .terms-modal-card {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .terms-modal-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .terms-modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .terms-modal-body {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .terms-modal-body h3 {
+            color: var(--brand-experiment);
+            margin: 20px 0 10px 0;
+            font-size: 1.1rem;
+        }
+
+        .terms-modal-footer {
+            padding: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            gap: 12px;
+        }
+
+        .terms-modal-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-decline {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-accept {
+            background: var(--brand-experiment);
+            color: white;
+            border: none;
+        }
+
+        .btn-accept:hover {
+            background: #7c3aed;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 
@@ -344,6 +430,42 @@
         </a>
     </div>
 
+    </div>
+
+    <!-- Registration Terms Modal -->
+    <div id="reg-terms-modal" class="terms-modal-overlay">
+        <div class="terms-modal-card">
+            <div class="terms-modal-header">
+                <h2>Mandatory Compliance Agreement</h2>
+            </div>
+            <div class="terms-modal-body">
+                <p style="color: #fb7185; font-weight: 700; background: rgba(244, 63, 94, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                    YOU MUST READ AND AGREE TO THESE TERMS TO CREATE AN ACCOUNT.
+                </p>
+                
+                <h3>1. LIMITATION OF LIABILITY</h3>
+                <p><strong>Annochat is provided "AS IS".</strong> The website owner and developers are <strong>NOT RESPONSIBLE</strong> for scams, fraud, financial loss, or harm caused by strangers on this platform. You use this service at your <strong>own risk</strong>.</p>
+                
+                <h3>2. 18+ REQUIREMENT</h3>
+                <p>By proceeding, you swear under penalty of perjury that you are at least 18 years of age.</p>
+                
+                <h3>3. CODE OF CONDUCT</h3>
+                <p>Harassment, illegal activities, and scamming are strictly prohibited and will result in permanent termination of your account.</p>
+                
+                <h3>4. ANONYMITY</h3>
+                <p>While we do not log chats, any information you share is your own responsibility. Never share personal sensitive data.</p>
+                
+                <p style="margin-top: 20px; font-size: 0.8rem; opacity: 0.7;">
+                    Clicking "Accept & Join" constitutes a legally binding agreement to our full <a href="terms.html" target="_blank" style="color: var(--brand-experiment);">Terms of Service</a>.
+                </p>
+            </div>
+            <div class="terms-modal-footer">
+                <button class="terms-modal-btn btn-decline" onclick="closeRegTerms()">Decline</button>
+                <button class="terms-modal-btn btn-accept" onclick="finalizeRegistration()">Accept & Join</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Need config.js for the API URL -->
     <script src="config.js"></script>
     <script>
@@ -406,14 +528,52 @@
             window.location.href = 'app.html';
         });
 
+        let pendingRegistrationData = null;
+
+        function closeRegTerms() {
+            document.getElementById('reg-terms-modal').style.display = 'none';
+        }
+
+        async function finalizeRegistration() {
+            if (!pendingRegistrationData) return;
+            
+            closeRegTerms();
+            submitBtn.classList.add('loading');
+            const originalBtnHtml = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Finalizing...';
+
+            try {
+                const response = await fetch(CONFIG.GOOGLE_SHEET_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(pendingRegistrationData)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showMessage('success', result.message);
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', pendingRegistrationData.username);
+                    setTimeout(() => {
+                        window.location.href = 'app.html';
+                    }, 1500);
+                } else {
+                    showMessage('error', result.message || 'Registration failed.');
+                }
+            } catch (err) {
+                showMessage('error', 'Connection failed. Please try again.');
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.innerHTML = originalBtnHtml;
+            }
+        }
+
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             
-            let registrationData = null;
-
             if (!isLoginMode) {
                 const age = document.getElementById('age').value;
                 const termsCheck = document.getElementById('terms-check');
@@ -435,7 +595,7 @@
                     return;
                 }
 
-                registrationData = {
+                pendingRegistrationData = {
                     action: 'register',
                     username,
                     password,
@@ -444,6 +604,10 @@
                     city,
                     age: parseInt(age)
                 };
+
+                // SHOW THE MANDATORY TERMS MODAL INSTEAD OF SUBMITTING
+                document.getElementById('reg-terms-modal').style.display = 'flex';
+                return;
             }
 
             if (!username || !password) {
@@ -462,41 +626,34 @@
             showMessage('', '');
 
             try {
-                const bodyData = isLoginMode ? {
-                    action: 'login',
-                    username,
-                    password
-                } : registrationData;
-
                 const response = await fetch(CONFIG.GOOGLE_SHEET_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(bodyData)
+                    body: JSON.stringify({
+                        action: 'login',
+                        username,
+                        password
+                    })
                 });
 
                 const result = await response.json();
-
                 if (result.success) {
                     showMessage('success', result.message);
-                    if (isLoginMode || result.message.includes('successful')) {
-                        // Successfully logged in or registered (could log them in immediately)
-                        localStorage.setItem('isLoggedIn', 'true');
-                        localStorage.setItem('username', username);
-
-                        setTimeout(() => {
-                            window.location.href = 'app.html';
-                        }, 1000);
-                    }
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', username);
+                    setTimeout(() => {
+                        window.location.href = 'app.html';
+                    }, 1000);
                 } else {
                     showMessage('error', result.message || 'An error occurred.');
                 }
             } catch (err) {
-                console.error(err);
-                // Fallback for CORS issues if Apps Script not deployed correctly
-                showMessage('error', 'Network error. Ensure Apps Script Web App is deployed accessible to "Anyone".');
+                showMessage('error', 'Network error. Please try again.');
             } finally {
-                submitBtn.classList.remove('loading');
-                submitBtn.innerHTML = originalBtnHtml;
+                if (isLoginMode) {
+                    submitBtn.classList.remove('loading');
+                    submitBtn.innerHTML = originalBtnHtml;
+                }
             }
         });
 

@@ -308,7 +308,13 @@
                 </div>
                 <div class="input-group">
                     <label for="age">Age</label>
-                    <input type="number" id="age" placeholder="Age" min="13" max="120" style="width: 100%;">
+                    <input type="number" id="age" placeholder="Must be 18 or older" min="18" max="120" style="width: 100%;">
+                </div>
+                <div class="input-group" style="display: flex; align-items: flex-start; gap: 10px; margin-top: 15px;">
+                    <input type="checkbox" id="terms-check" style="width: auto; margin-top: 4px;" required>
+                    <label for="terms-check" style="font-size: 0.85rem; color: var(--text-muted); cursor: pointer;">
+                        I confirm I am 18+ and agree to the <a href="terms.html" target="_blank" style="color: var(--brand-experiment); text-decoration: none;">Terms of Service</a>
+                    </label>
                 </div>
             </div>
 
@@ -325,6 +331,9 @@
 
         <div class="auth-footer">
             <span id="toggle-text">Don't have an account? <a href="#" id="toggle-form">Sign up</a></span>
+            <div style="margin-top: 15px; font-size: 0.8rem; opacity: 0.6;">
+                By using Annochat, you agree to our <a href="terms.html" target="_blank">Terms of Service</a>.
+            </div>
         </div>
 
         <div class="auth-divider">OR</div>
@@ -402,26 +411,48 @@
 
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
-            const lastName = document.getElementById('lastName').value.trim();
-            const age = document.getElementById('age').value.trim();
-            const country = document.getElementById('country').value.trim();
-            const city = document.getElementById('city').value.trim();
+            
+            let registrationData = null;
+
+            if (!isLoginMode) {
+                const age = document.getElementById('age').value;
+                const termsCheck = document.getElementById('terms-check');
+                const country = document.getElementById('country').value;
+                const city = document.getElementById('city').value;
+                
+                if (!age || parseInt(age) < 18) {
+                    showMessage('error', "You must be at least 18 years old to join.");
+                    return;
+                }
+
+                if (!termsCheck.checked) {
+                    showMessage('error', "You must agree to the Terms of Service.");
+                    return;
+                }
+
+                if (!country || !city) {
+                    showMessage('error', "Please select your Country and City.");
+                    return;
+                }
+
+                registrationData = {
+                    action: 'register',
+                    username,
+                    password,
+                    lastName: document.getElementById('lastName').value,
+                    country,
+                    city,
+                    age: parseInt(age)
+                };
+            }
 
             if (!username || !password) {
                 showMessage('error', 'Please fill in all required fields.');
                 return;
             }
 
-            if (!isLoginMode) {
-                if (!age || !country || !city) {
-                    showMessage('error', 'Please provide your Age, Country, and City.');
-                    return;
-                }
-            }
-
             if (!CONFIG.GOOGLE_SHEET_API_URL) {
-                // If the user hasn't setup the URL yet, we'll bypass it for demo, but normally error
-                showMessage('error', 'Google Sheet API URL is missing in config.js. Please ask admin to setup.');
+                showMessage('error', 'Authentication service is currently unavailable.');
                 return;
             }
 
@@ -431,18 +462,16 @@
             showMessage('', '');
 
             try {
+                const bodyData = isLoginMode ? {
+                    action: 'login',
+                    username,
+                    password
+                } : registrationData;
+
                 const response = await fetch(CONFIG.GOOGLE_SHEET_API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Apps Script requires plain text or form-urlencoded sometimes due to CORS, but JSON stringified body works
-                    body: JSON.stringify({
-                        action: isLoginMode ? 'login' : 'register',
-                        username: username,
-                        password: password,
-                        lastName: lastName,
-                        age: age,
-                        country: country,
-                        city: city
-                    })
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(bodyData)
                 });
 
                 const result = await response.json();

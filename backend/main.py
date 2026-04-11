@@ -115,6 +115,7 @@ CRITICAL RULES FOR REALISM:
    - Examples: `(gif: facepalm)`, `(gif: happy dance)`, `(gif: wtf)`.
    - YOU CAN RESPOND WITH ONLY A GIF if you want to react silently.
    - ONLY send a GIF if it fits the conversation (max once every few messages). Don't explain it, just use the tag.
+9. If you are starting the conversation, you can say "hi", "hey", "asl?", or simply "m" or "f" to start.
 """
 
 @app.get("/")

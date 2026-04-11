@@ -275,6 +275,10 @@ async function sendMessage() {
     const text = messageInputEl.value.trim();
     if (!text || isWaitingForStranger) return;
     
+    // Hide welcome banner if it exists when first message is sent
+    const banner = document.querySelector('.welcome-banner');
+    if (banner) banner.style.opacity = '0.5';
+
     messageInputEl.value = '';
     
     let userNameText = 'You';
@@ -290,11 +294,16 @@ async function sendMessage() {
     triggerStrangerReply();
 }
 
-async function triggerStrangerReply() {
-    isWaitingForStranger = true;
+async function triggerStrangerReply(isAutoGreeting = false) {
+    if (!isAutoGreeting) isWaitingForStranger = true;
     
     // FETCH text immediately in the background, but DONT show it yet
     let responseText = await fetchStrangerResponse();
+
+    if (!responseText || responseText === "disconnected") {
+        if (!isAutoGreeting) triggerDisconnect();
+        return;
+    }
 
     // Check random drop logic and explicit AI disconnect
     if (Math.random() < 0.05 || responseText.includes("disconnected") || responseText.includes("[DISCONNECT]")) {
@@ -303,12 +312,12 @@ async function triggerStrangerReply() {
     }
 
     const typingDelay = calculateTypingDelayMS(responseText.length);
-    headerStatusText.innerText = 'Stranger is typing...';
+    if (headerStatusText) headerStatusText.innerText = 'Stranger is typing...';
     typingIndicatorEl.classList.remove('hidden');
 
     setTimeout(() => {
         typingIndicatorEl.classList.add('hidden');
-        headerStatusText.innerText = "Connected";
+        if (headerStatusText) headerStatusText.innerText = "Connected";
         updateActionBtn('chatting');
         
         appendMessage({
@@ -424,29 +433,51 @@ function nextStranger() {
     // Reset state
     isWaitingForStranger = true;
     currentSessionId = Math.random().toString(36).substring(7);
-    
-    // Clear chat and header UI, show welcome banner
-    chatMessagesEl.innerHTML = `
-        <div class="welcome-banner">
-            <div class="welcome-avatar"><i class="fa-solid fa-at"></i></div>
-            <h2>New Stranger</h2>
-            <p>You have connected with a new stranger. Say hi!</p>
-        </div>
-    `;
     chatHistory = [];
     
+    // Clear chat and show finding state
+    chatMessagesEl.innerHTML = `
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--text-muted); opacity:0.6;">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size:2rem; margin-bottom:15px;"></i>
+            <p>Searching for a new stranger...</p>
+        </div>
+    `;
+    
     const dmName = document.getElementById('dm-stranger-name');
-    if(dmName) dmName.innerText = 'Stranger';
+    if(dmName) dmName.innerText = 'Finding...';
     const headerStatusText = document.getElementById('header-status-text');
     if(headerStatusText) headerStatusText.innerText = 'Finding...';
     
-    // Simulate finding for a split second for better UX
     updateActionBtn('finding');
+
+    // More realistic finding delay (1.5 to 3.5 seconds)
+    const findDelay = Math.random() * 2000 + 1500;
+
     setTimeout(() => {
+        const strangerDisplayName = `Stranger`;
+
+        // Update UI to Connected
         if(headerStatusText) headerStatusText.innerText = 'Connected';
+        if(dmName) dmName.innerText = strangerDisplayName;
         updateActionBtn('chatting');
         isWaitingForStranger = false;
-    }, 1000);
+
+        // Show welcome banner
+        chatMessagesEl.innerHTML = `
+            <div class="welcome-banner">
+                <div class="welcome-avatar"><i class="fa-solid fa-at"></i></div>
+                <h2>${strangerDisplayName}</h2>
+                <p>You have connected with a new stranger. Say hi!</p>
+            </div>
+        `;
+
+        // Random chance (65%) for the stranger to greet FIRST
+        if (Math.random() < 0.65) {
+            setTimeout(() => {
+                triggerStrangerReply(true);
+            }, 500);
+        }
+    }, findDelay);
 }
 
 setInterval(() => {

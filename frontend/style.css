@@ -1332,14 +1332,14 @@ input[type=range]::-webkit-slider-thumb {
     pointer-events: none;
     mask-image: radial-gradient(ellipse at top, black 20%, transparent 80%);
     -webkit-mask-image: radial-gradient(ellipse at top, black 20%, transparent 80%);
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .gradient-text {
     background: linear-gradient(135deg, #f472b6, #fda4af, #f43f5e);
-    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: gradientShift 6s ease-in-out infinite alternate;
 }
 
 @keyframes gradientShift {
@@ -1578,13 +1578,12 @@ input[type=range]::-webkit-slider-thumb {
     margin-left: 40%;
     position: relative;
     z-index: -1;
-    animation: floatHero 6s infinite ease-in-out;
     filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.8));
     mask-image: linear-gradient(to right, transparent 0%, transparent 5%, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 1) 85%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 5%, rgba(0, 0, 0, 1) 65%, rgba(0, 0, 0, 1) 85%, transparent 100%);
+    will-change: transform;
+    transform: translateZ(0);
 }
-
-
 
 @keyframes floatHero {
 
@@ -2391,7 +2390,7 @@ input[type=range]::-webkit-slider-thumb {
     .brand-icon {
         transform: scale(1.8);
     }
-    
+
     .nav-container {
         padding: 0 20px;
         box-sizing: border-box;

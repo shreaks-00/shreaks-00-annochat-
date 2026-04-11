@@ -5,7 +5,7 @@
 const CONFIG = {
     BACKEND_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
         ? "http://localhost:8000" 
-        : "https://annochat-zvw0.onrender.com",
+        : "https://shreaks-00-annochat.onrender.com",
     GOOGLE_SHEET_API_URL: "https://script.google.com/macros/s/AKfycbxEA0mgCM69nwG8P9i8FO72KWW3QLmF-09cd3eboXfM8e8VDG-HyTcwWnufFmu-bQQ/exec"
 };
 

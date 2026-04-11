@@ -20,7 +20,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://regurself.space",
-        "https://www.regurself.space"
+        "https://www.regurself.space",
+        "https://annochat.antriksh92006.workers.dev"
     ],
     allow_origin_regex=r"https://.*\.pages\.dev|http://localhost:.*|http://127\.0\.0\.1:.*",
     allow_credentials=True,

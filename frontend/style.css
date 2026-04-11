@@ -25,6 +25,15 @@
     padding: 0;
 }
 
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+}
+
 body {
     font-family: var(--font-ui);
     background-color: var(--bg-secondary);
@@ -1371,12 +1380,12 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 .nav-container {
-    max-width: 1300px;
+    max-width: 1400px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 40px;
+    padding: 0 24px;
     box-sizing: border-box;
     width: 100%;
 }
@@ -2460,5 +2469,21 @@ input[type=range]::-webkit-slider-thumb {
 
     .footer {
         padding: 50px 18px 32px;
+    }
+}
+@media (max-width: 480px) {
+    .nav-container,
+    .hero-content,
+    .features-content,
+    .how-it-works,
+    .faq-section,
+    .seo-context-area,
+    .final-cta {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+    
+    .logo {
+        gap: 8px;
     }
 }

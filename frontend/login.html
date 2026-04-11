@@ -15,7 +15,7 @@
         }
 
         .auth-page {
-            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -23,8 +23,9 @@
                 radial-gradient(circle at bottom left, rgba(236, 72, 153, 0.1), transparent 40%);
             background-color: var(--bg-primary);
             position: relative;
-            overflow: hidden;
-            padding: 20px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 40px 20px;
         }
 
         .auth-card {

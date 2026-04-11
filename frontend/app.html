@@ -229,6 +229,29 @@
         </div>
     </div>
 
+    <!-- Safety & Liability Modal -->
+    <div id="safety-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+        <div class="safety-card" style="background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; max-width: 500px; width: 100%; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 20px;">🛡️</div>
+            <h2 style="font-size: 1.8rem; margin-bottom: 15px; color: #fff;">Safety & Responsibility</h2>
+            <div style="text-align: left; margin-bottom: 25px; color: #cbd5e1; font-size: 0.95rem; line-height: 1.6;">
+                <p style="margin-bottom: 12px;">Welcome to Annochat. Before you continue, please acknowledge the following:</p>
+                <ul style="padding-left: 20px; list-style-type: disc;">
+                    <li>You are at least <strong>18 years old</strong>.</li>
+                    <li>Annochat is for <strong>anonymous entertainment</strong> only.</li>
+                    <li style="color: #fb7185; font-weight: 600;">The platform owner is NOT liable for any scams, fraud, physical harm, or psychological distress resulting from interactions with strangers.</li>
+                    <li>You agree to use the platform at your <strong>own risk</strong>.</li>
+                </ul>
+            </div>
+            <button onclick="acceptSafety()" style="width: 100%; background: var(--brand-experiment); border: none; color: white; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s ease;">
+                I Agree & Understood
+            </button>
+            <p style="margin-top: 15px; font-size: 0.8rem; color: var(--text-muted);">
+                By clicking, you accept our <a href="terms.html" target="_blank" style="color: var(--brand-experiment); text-decoration: none;">Terms of Service</a>.
+            </p>
+        </div>
+    </div>
+
     <script src="config.js"></script>
     <script src="script.js"></script>
 </body>

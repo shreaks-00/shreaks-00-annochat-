@@ -2,6 +2,23 @@ let chatHistory = [];
 let isWaitingForStranger = false;
 let currentSessionId = Math.random().toString(36).substring(7);
 
+function handleSafetyModal() {
+    const safetyAgreed = localStorage.getItem('safety_agreed');
+    const modal = document.getElementById('safety-modal');
+    if (!safetyAgreed && modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function acceptSafety() {
+    localStorage.setItem('safety_agreed', 'true');
+    const modal = document.getElementById('safety-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+// Check for safety agreement on load
+window.addEventListener('load', handleSafetyModal);
+
 // DOM Elements
 const chatMessagesEl = document.getElementById('chat-messages');
 const messageInputEl = document.getElementById('message-input');
